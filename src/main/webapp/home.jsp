@@ -39,7 +39,7 @@ pageEncoding="ISO-8859-1"%>
     </nav>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-3">
+        <div class="col col-3 me-2">
           <div
             class="d-flex flex-column flex-shrink-0 p-3 collapse"
             style="width: 280px"
@@ -48,29 +48,42 @@ pageEncoding="ISO-8859-1"%>
               <li class="nav-item">
                 <form action="NavigationServlet" method="post">
                   <div class="row my-1">
-                    <input class="btn btn-primary" type="hidden" name="email" value="<%=
-                    request.getAttribute("email") %>"> <input type="hidden"
-                    name="password" value="<%= request.getAttribute("password")
-                    %>">
+                    <input class="btn btn-primary" type="hidden" name="email"
+                    value="<%= request.getAttribute("email") %>"> <input
+                    type="hidden" name="password" value="<%=
+                    request.getAttribute("password") %>">
                   </div>
                   <div class="row my-1">
-                    <input class="btn btn-primary" type="submit" name="newMail" value="New Mail" />
+                    <input
+                      class="btn btn-primary"
+                      type="submit"
+                      name="newMail"
+                      value="New Mail"
+                    />
                   </div>
                   <div class="row my-1">
-                    <input class="btn btn-primary" type="submit" name="inbox" value="Inbox" />
+                    <input
+                      class="btn btn-primary"
+                      type="submit"
+                      name="inbox"
+                      value="Inbox"
+                    />
                   </div>
                   <div class="row my-1">
-                    <input class="btn btn-primary" type="submit" name="sent" value="Sent" />
+                    <input
+                      class="btn btn-primary"
+                      type="submit"
+                      name="sent"
+                      value="Sent"
+                    />
                   </div>
                 </form>
               </li>
             </ul>
           </div>
-        </div>
-        <div class="col">
-          <%= request.getAttribute("content")!=null ?
-          request.getAttribute("content") : "" %>
-        </div>
+        </div col col-3 me-2>
+			<%= request.getAttribute("content")!=null ?
+			request.getAttribute("content") : "" %>
       </div>
     </div>
   </body>
