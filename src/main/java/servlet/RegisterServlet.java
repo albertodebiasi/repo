@@ -2,10 +2,13 @@ package servlet;
 
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import salt.hashing;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,56 +22,68 @@ import util.Util;
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static Connection conn;
-	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public RegisterServlet() {
-        super();
-    }
-    
-    public void init() throws ServletException {
-    	conn = Util.initDbConnection();
-    }
+	private static Connection conn;
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public RegisterServlet() {
+		super();
+	}
+
+	public void init() throws ServletException {
+		conn = Util.initDbConnection();
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("text/html");
-		
-		// The replacement escapes apostrophe special character in order to store it in SQL
+
+		String algorithm = "MD5";
+
+		// The replacement escapes apostrophe special character in order to store it in
+		// SQL
 		String name = request.getParameter("name").replace("'", "''");
 		String surname = request.getParameter("surname").replace("'", "''");
 		String email = request.getParameter("email").replace("'", "''");
 		String pwd = request.getParameter("password").replace("'", "''");
+		byte[] saltInput = hashing.createSalt();
+		String salt = hashing.bytesToStringHex(saltInput);
+		byte[] salted = salt.getBytes();
+		String hashedPassword = null;
+		
+		try {
+			hashedPassword = hashing.generateHash(pwd, algorithm, salted);
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		try (Statement st = conn.createStatement()) {
 			ResultSet sqlRes = st.executeQuery(
-				"SELECT * "
-				+ "FROM user "
-				+ "WHERE email='" + email + "'"
-			);
-			
+					"SELECT * "
+							+ "FROM user "
+							+ "WHERE email='" + email + "'");
+
 			if (sqlRes.next()) {
 				System.out.println("Email already registered!");
 				request.getRequestDispatcher("register.html").forward(request, response);
-				
+
 			} else {
 				st.execute(
-					"INSERT INTO user ( name, surname, email, password ) "
-					+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + pwd + "' )"
-				);
-				
+						"INSERT INTO user ( name, surname, email, password, salt) "
+								+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + hashedPassword + "', '" + salt + "' )");
+
 				request.setAttribute("email", email);
 				request.setAttribute("password", pwd);
-				
+
 				System.out.println("Registration succeeded!");
 				request.getRequestDispatcher("home.jsp").forward(request, response);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			request.getRequestDispatcher("register.html").forward(request, response);
 		}
 	}
-
 }
