@@ -4,9 +4,9 @@ import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import salt.hashing;
 
@@ -51,6 +51,7 @@ public class RegisterServlet extends HttpServlet {
 		String salt = hashing.bytesToStringHex(saltInput);
 		byte[] salted = salt.getBytes();
 		String hashedPassword = null;
+		String sql = "SELECT * FROM user WHERE email=?";
 		
 		try {
 			hashedPassword = hashing.generateHash(pwd, algorithm, salted);
@@ -59,11 +60,10 @@ public class RegisterServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-		try (Statement st = conn.createStatement()) {
-			ResultSet sqlRes = st.executeQuery(
-					"SELECT * "
-							+ "FROM user "
-							+ "WHERE email='" + email + "'");
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, email);
+			ResultSet sqlRes = st.executeQuery();
 
 			if (sqlRes.next()) {
 				System.out.println("Email already registered!");

@@ -3,9 +3,9 @@ package servlet;
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import salt.hashing;
 import java.security.NoSuchAlgorithmException;
@@ -42,13 +42,14 @@ public class LoginServlet extends HttpServlet {
 		String email = request.getParameter("email");
 		String pwd = request.getParameter("password");
 		byte[] salt = null;
+		String sql = "SELECT * FROM user WHERE email=?";
+		String sqlString = "SELECT * FROM user WHERE email=? AND password=?";
+	
 		
-		try (Statement st = conn.createStatement()) {
-			ResultSet sql1 = st.executeQuery(
-				"SELECT * "
-				+ "FROM user "
-				+ "WHERE email='" + email + "' "
-			);
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, email);
+			ResultSet sql1 = st.executeQuery();
 			if (sql1.next()) {
 				salt= sql1.getString(5).getBytes("Utf-8");
 				sql1.close();
@@ -57,13 +58,10 @@ public class LoginServlet extends HttpServlet {
 				String salted = new String(salt);
 				System.out.println("salted: " + salted);	
 			}		
-
-			ResultSet sqlRes = st.executeQuery(
-				"SELECT * "
-				+ "FROM user "
-				+ "WHERE email='" + email + "' "
-					+ "AND password='" + pwd + "'"
-			);
+			PreparedStatement st1 = conn.prepareStatement(sqlString);
+			st1.setString(1, email);
+			st1.setString(2, pwd);
+			ResultSet sqlRes = st.executeQuery();
 			
 			if (sqlRes.next()) {
 				request.setAttribute("email", sqlRes.getString(3));

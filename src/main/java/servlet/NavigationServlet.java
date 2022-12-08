@@ -3,9 +3,9 @@ package servlet;
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,6 +20,10 @@ import util.Util;
 public class NavigationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection conn;
+	String sql= "SELECT * FROM mail WHERE receiver=? ORDER BY time DESC";
+	String sql1= "SELECT * FROM mail WHERE receiver=? AND sender=? ORDER BY time DESC";
+	String sql2= "SELECT * FROM mail WHERE sender=? ORDER BY time DESC";
+	String sql3= "SELECT * FROM mail WHERE sender=? AND receiver=? ORDER BY time DESC";
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -66,19 +70,17 @@ public class NavigationServlet extends HttpServlet {
 	}
 
 	private String getHtmlForInbox(String receiver, String password, String sender) {
-		try (Statement st = conn.createStatement()) {
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, receiver);
 			ResultSet sqlRes;
 			if (sender == null) {
-				sqlRes = st.executeQuery(
-						"SELECT * FROM mail "
-								+ "WHERE receiver='" + receiver + "'"
-								+ "ORDER BY time DESC");
+				sqlRes = st.executeQuery();
 			} else {
-				sqlRes = st.executeQuery(
-						"SELECT * FROM mail "
-								+ "WHERE receiver='" + receiver + "'"
-								+ "AND sender='" + sender + "'"
-								+ "ORDER BY time DESC");
+				PreparedStatement st1 = conn.prepareStatement(sql1);
+				st1.setString(1, receiver);
+				st1.setString(2, sender);
+				sqlRes = st.executeQuery();
 			}
 
 			StringBuilder output = new StringBuilder();
@@ -116,19 +118,17 @@ public class NavigationServlet extends HttpServlet {
 	}
 
 	private String getHtmlForSent(String sender, String password, String receiver) {
-		try (Statement st = conn.createStatement()) {
+		try{
+			PreparedStatement st = conn.prepareStatement(sql2);
+			st.setString(1, sender);
 			ResultSet sqlRes;
 			if (receiver == null) {
-				sqlRes = st.executeQuery(
-						"SELECT * FROM mail "
-								+ "WHERE sender='" + sender + "'"
-								+ "ORDER BY time DESC");
+				sqlRes = st.executeQuery();
 			} else {
-				sqlRes = st.executeQuery(
-						"SELECT * FROM mail "
-								+ "WHERE sender='" + sender + "'"
-								+ "AND receiver='" + receiver + "'"
-								+ "ORDER BY time DESC");
+				PreparedStatement st1 =conn.prepareStatement(sql3);
+				st1.setString(1, sender);
+				st1.setString(2,receiver);
+				sqlRes = st.executeQuery();
 			}
 			StringBuilder output = new StringBuilder();
 			output.append("<div class=\"col-8 mt-4\">\r\n");

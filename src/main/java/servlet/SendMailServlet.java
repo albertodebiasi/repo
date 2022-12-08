@@ -3,6 +3,7 @@ package servlet;
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,8 @@ import util.Util;
 public class SendMailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection conn;
+	String sql ="INSERT INTO mail ( sender, receiver, subject, body, time ) "
+	+ "VALUES ( ?, ?, ?, ?, ? )";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -45,11 +48,14 @@ public class SendMailServlet extends HttpServlet {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		String timestamp = format.format(new Date(System.currentTimeMillis()));
 		
-		try (Statement st = conn.createStatement()) {
-			st.execute(
-				"INSERT INTO mail ( sender, receiver, subject, body, time ) "
-				+ "VALUES ( '" + sender + "', '" + receiver + "', '" + subject + "', '" + body + "', '" + timestamp + "' )"
-			);
+		try (PreparedStatement st = conn.prepareStatement(sql)) {
+			st.setString(1, sender);
+			st.setString(2, receiver);
+			st.setString(3, subject);
+			st.setString(4, body);
+			st.setString(5, timestamp);
+
+			st.execute();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
