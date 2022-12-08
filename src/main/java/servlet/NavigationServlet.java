@@ -61,7 +61,7 @@ public class NavigationServlet extends HttpServlet {
 				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required></div>\r\n"
 				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required></div>\r\n"
 				+ "		<div class=\"col my-1\"><textarea class=\"form-control\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea></div>\r\n"
-				+ "		<input class=\"btn btn-primary\" type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
+				+ "		<input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
 				+ "	</form></div>";
 	}
 
@@ -88,7 +88,7 @@ public class NavigationServlet extends HttpServlet {
 			output.append("		<input type=\"hidden\" name=\"email\" value=\"" + receiver + "\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
 			output.append("		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for sender\" name=\"search\" required></div>\r\n");
-			output.append("		<div class=\"col\"><input class=\"btn btn-primary\" type=\"submit\" name=\"inbox\" value=\"Search\"></div></div>\r\n");
+			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"inbox\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (sender != null)
@@ -138,7 +138,7 @@ public class NavigationServlet extends HttpServlet {
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
 			output.append(
 					"		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for receiver\" name=\"search\" required></div>\r\n");
-			output.append("		<div class=\"col\"><input class=\"btn btn-primary\" type=\"submit\" name=\"sent\" value=\"Search\"></div></div>\r\n");
+			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (receiver != null)
