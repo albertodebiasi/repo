@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import cookies.cookies;
 import salt.hashing;
 import java.security.NoSuchAlgorithmException;
 
@@ -37,6 +38,13 @@ public class LoginServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			cookies.setCsrfToken(request,response);
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		response.setContentType("text/html");
 		
 		String email = request.getParameter("email");

@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.owasp.encoder.Encode;
 
+import cookies.cookies;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,6 +44,9 @@ public class NavigationServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		cookies.checkCsrf(request);
+
 		response.setContentType("text/html");
 
 		String email = request.getParameter("email").replace("'", "''");
@@ -60,10 +65,10 @@ public class NavigationServlet extends HttpServlet {
 
 	private String getHtmlForNewMail(String email, String pwd) {
 		return "<div class=\"col col-8 mt-4\"><form id=\"submitForm\" class=\"form-resize\" action=\"SendMailServlet\" method=\"post\">\r\n"
-				+ "		<input type=\"hidden\" name=\"email\" value=\"" + email + "\">\r\n"
-				+ "		<input type=\"hidden\" name=\"password\" value=\"" + pwd + "\">\r\n"
-				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required></div>\r\n"
-				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required></div>\r\n"
+				+ "		<input type=\"hidden\" name=\"email\" value=\"\"" + email + "\">\r\n"
+				+ "		<input type=\"hidden\" name=\"password\" value=\"\"" + pwd + "\">\r\n"
+				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" value=\"\" required></div>\r\n"
+				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" value=\"\" required></div>\r\n"
 				+ "		<div class=\"col my-1\"><textarea class=\"form-control\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea></div>\r\n"
 				+ "		<input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
 				+ "	</form></div>";
@@ -89,12 +94,12 @@ public class NavigationServlet extends HttpServlet {
 			output.append("<div class=\"col col-8 mb-3\"><form action=\"NavigationServlet\" method=\"post\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"email\" value=\"" + receiver + "\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
-			output.append("		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for sender\" name=\"search\" required></div>\r\n");
+			output.append("		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for sender\" name=\"search\" value=\"\"required></input></div>\r\n");
 			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"inbox\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (sender != null)
-				output.append("<p>You searched for: " + sender + "</p>\r\n");
+				output.append("<p>You searched for: " + Encode.forHtml(sender) + "</p>\r\n");
 
 			while (sqlRes.next()) {
 				output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
@@ -137,12 +142,12 @@ public class NavigationServlet extends HttpServlet {
 			output.append("		<input type=\"hidden\" name=\"email\" value=\"" + sender + "\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
 			output.append(
-					"		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for receiver\" name=\"search\" required></div>\r\n");
+					"		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for receiver\" name=\"search\" value=\"\" required></div>\r\n");
 			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (receiver != null)
-				output.append("<p>You searched for: " + receiver + "</p>\r\n");
+				output.append("<p>You searched for: " + Encode.forHtml(receiver) + "</p>\r\n");
 
 			while (sqlRes.next()) {
 				output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
