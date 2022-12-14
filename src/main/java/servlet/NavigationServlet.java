@@ -65,15 +65,15 @@ public class NavigationServlet extends HttpServlet {
 
 	private String getHtmlForNewMail(String email, String pwd) {
 		return "<div class=\"col col-8 mt-4\"><form id=\"submitForm\" class=\"form-resize\" action=\"SendMailServlet\" method=\"post\">\r\n"
-				+ "		<input type=\"hidden\" name=\"email\" value=\"\"" + email + "\">\r\n"
-				+ "		<input type=\"hidden\" name=\"password\" value=\"\"" + pwd + "\">\r\n"
-				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" value=\"\" required></div>\r\n"
-				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" value=\"\" required></div>\r\n"
+				+ "		<input type=\"hidden\" name=\"email\" value=\"" + email + "\">\r\n"
+				+ "		<input type=\"hidden\" name=\"password\" value=\"" + pwd + "\">\r\n"
+				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required></div>\r\n"
+				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required></div>\r\n"
 				+ "		<div class=\"col my-1\"><textarea class=\"form-control\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea></div>\r\n"
 				+ "		<input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
 				+ "		<input class=\"ms-3\" type=\"checkbox\" id=\"check\" name=\"check\" value=\"check\">\n"
-				+ "  <label for=\"check\"> Digitally Sign!</label><br><br>\n"
-				+ "	</form></div>";
+				+ "		<label for=\"check\"> Digitally Sign!</label><br><br>\n"
+				+ "		</form></div>";
 	}
 
 	private String getHtmlForInbox(String receiver, String password, String sender) {

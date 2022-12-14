@@ -2,13 +2,17 @@ package servlet;
 
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import salt.hashing;
+import rsa.rsa;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -51,6 +55,9 @@ public class RegisterServlet extends HttpServlet {
 		String salt = hashing.bytesToStringHex(saltInput);
 		byte[] salted = salt.getBytes();
 		String hashedPassword = null;
+		KeyPair keyPairGen = null;
+		PublicKey publicKey = null;
+		PrivateKey privateKey = null;
 		String sql = "SELECT * FROM user WHERE email=?";
 		
 		try {
@@ -60,6 +67,16 @@ public class RegisterServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
+		rsa rsa = new rsa();
+		try {
+			keyPairGen = rsa.keyPairGen();
+			publicKey = keyPairGen.getPublic();
+			privateKey = keyPairGen.getPrivate();
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		try {
 			PreparedStatement st = conn.prepareStatement(sql);
 			st.setString(1, email);
@@ -71,8 +88,8 @@ public class RegisterServlet extends HttpServlet {
 
 			} else {
 				st.execute(
-						"INSERT INTO user ( name, surname, email, password, salt) "
-								+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + hashedPassword + "', '" + salt + "' )");
+						"INSERT INTO user ( name, surname, email, password, salt, privatekey, publickey) "
+								+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + hashedPassword + "', '" + salt + "', '" + privateKey + "', '" + publicKey + "' )");
 
 				request.setAttribute("email", email);
 				request.setAttribute("password", pwd);

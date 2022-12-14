@@ -54,7 +54,7 @@ public class SendMailServlet extends HttpServlet {
 			st.setString(4, body);
 			st.setString(5, timestamp);
 
-			st.execute();
+			st.executeUpdate();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
