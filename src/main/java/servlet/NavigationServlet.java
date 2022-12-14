@@ -71,6 +71,8 @@ public class NavigationServlet extends HttpServlet {
 				+ "		<div class=\"col my-1\"><input class=\"form-control\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" value=\"\" required></div>\r\n"
 				+ "		<div class=\"col my-1\"><textarea class=\"form-control\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea></div>\r\n"
 				+ "		<input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
+				+ "		<input class=\"ms-3\" type=\"checkbox\" id=\"check\" name=\"check\" value=\"check\">\n"
+				+ "  <label for=\"check\"> Digitally Sign!</label><br><br>\n"
 				+ "	</form></div>";
 	}
 
