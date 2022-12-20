@@ -7,7 +7,8 @@ The application is insecure, the student must secure it against the studied atta
 ### Required tools
 - [Java JDK 11](https://www.oracle.com/java/technologies/downloads/#java11) or higher;
 - [Eclipse IDE](https://www.eclipse.org/downloads/);
-- MySQL Server and MySQL Workbench, follow this [video](https://www.youtube.com/watch?v=YSOY_NyOg40) (during installation remember to set password to "root").
+- MySQL Server and MySQL Workbench, follow this [video](https://www.youtube.com/watch?v=YSOY_NyOg40)
+- Make sure the password in 'util.java' is the same as the password in the database!
 
 ### Eclipse IDE setup
 1. Open Eclipse
@@ -38,24 +39,30 @@ The application is insecure, the student must secure it against the studied atta
 ```sql
 CREATE DATABASE mail_db;
 
-CREATE TABLE mail_db.user (
-	name varchar(50)  NOT NULL,
-	surname varchar(50) NOT NULL,
-	email varchar(50) NOT NULL,
-	password varchar(50) NOT NULL,
-	CONSTRAINT user_PK PRIMARY KEY (email)
-);
+CREATE TABLE `user` (
+  `name` varchar(50) NOT NULL,
+  `surname` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `salt` varchar(50) NOT NULL,
+  `privatekey` varchar(2048) NOT NULL,
+  `publickey` varchar(2048) NOT NULL,
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE mail_db.mail (
-	sender varchar(50) NOT NULL,
-	receiver varchar(50) NOT NULL,
-	subject varchar(100) NULL,
-	body text NOT NULL,
-	time datetime NOT NULL,
-	CONSTRAINT mail_FK FOREIGN KEY (sender) REFERENCES user(email) ON DELETE CASCADE,
-	CONSTRAINT mail_FK_1 FOREIGN KEY (receiver) REFERENCES user(email) ON DELETE CASCADE
-);
-```
+
+CREATE TABLE `mail` (
+  `sender` varchar(50) NOT NULL,
+  `receiver` varchar(50) NOT NULL,
+  `subject` varchar(100) NOT NULL,
+  `body` text NOT NULL,
+  `time` datetime NOT NULL,
+  KEY `mail_FK` (`sender`),
+  KEY `mail_FK_1` (`receiver`),
+  CONSTRAINT `mail_FK` FOREIGN KEY (`sender`) REFERENCES `user` (`email`) ON DELETE CASCADE,
+  CONSTRAINT `mail_FK_1` FOREIGN KEY (`receiver`) REFERENCES `user` (`email`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 ### Project setup
 - If you want to create a brand new project
