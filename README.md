@@ -1,7 +1,20 @@
 # E-mail server/client architecture emulator
-This is the Java baseline application for the exam. 
+Questa è un’applicazione Java sviluppata per l’esame di Management of System Security and Networks 2022/2023 | UNIBZ
 
-The application is insecure, the student must secure it against the studied attacks.
+L’applicazione è stata resa sicura da potenziali attacchi da:
+
+-	Alberto Debiasi
+-	Sebastiano Druda
+-	Giulia Aquilanti Pelagalli
+
+Per proteggere il nostro e-mail provider da eventuali pericoli, abbiamo implementato le seguenti misure di sicurezza: 
+
+-	Prepared Statements
+-	Password Encryption (Salt)
+-	CSRF (Cookies)
+-	XSS (Encode for HTML)
+
+E abbiamo anche scelto di collegare il nostro web-site alle API di Google per il re-captchaV2 in prevenzione ai bot (not-human).
 
 ## Instructions for using the application
 ### Required tools
