@@ -60,8 +60,9 @@ public class LoginServlet extends HttpServlet {
 			ResultSet sql1 = st.executeQuery();
 			if (sql1.next()) {
 				salt= sql1.getString(5).getBytes("Utf-8");
-				sql1.close();
+				System.out.println(pwd);
 				pwd = hashing.generateHash(pwd, algorithm, salt);
+				sql1.close();
 				System.out.println("password: " + pwd);
 				String salted = new String(salt);
 				System.out.println("salted: " + salted);	
@@ -72,14 +73,18 @@ public class LoginServlet extends HttpServlet {
 			ResultSet sqlRes = st.executeQuery();
 			
 			if (sqlRes.next()) {
-				request.setAttribute("email", sqlRes.getString(3));
-				request.setAttribute("password", sqlRes.getString(4));
+				if(pwd.equals(sqlRes.getString(4))) {
+					request.setAttribute("email", sqlRes.getString(3));
+					request.setAttribute("password", sqlRes.getString(4));
+					
+					System.out.println("Login succeeded!");
+					request.setAttribute("content", "");
+					request.getRequestDispatcher("home.jsp").forward(request, response);
 				
-				System.out.println("Login succeeded!");
-				request.setAttribute("content", "");
-				request.getRequestDispatcher("home.jsp").forward(request, response);
-				
-				
+				}else {
+					System.out.println("Login failed!");
+					request.getRequestDispatcher("login.html").forward(request, response);
+				}	
 			} else {
 				System.out.println("Login failed!");
 				request.getRequestDispatcher("login.html").forward(request, response);
