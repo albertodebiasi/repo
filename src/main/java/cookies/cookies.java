@@ -35,7 +35,7 @@ public class cookies {
 
         String cookieServer = (String)session.getAttribute("csrfToken");
 
-    	System.out.print(cookieServer + " != " + cookieClient);
+    	System.out.print(cookieServer + " = " + cookieClient);
 
         if(!cookieClient.equals(cookieServer)) throw new Exception("token not matching");
     }
