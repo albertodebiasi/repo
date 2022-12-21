@@ -22,10 +22,10 @@ import util.Util;
 public class NavigationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Connection conn;
-	String sql= "SELECT * FROM mail WHERE receiver=? ORDER BY time DESC";
-	String sql1= "SELECT * FROM mail WHERE receiver=? AND sender=? ORDER BY time DESC";
-	String sql2= "SELECT * FROM mail WHERE sender=? ORDER BY time DESC";
-	String sql3= "SELECT * FROM mail WHERE sender=? AND receiver=? ORDER BY time DESC";
+	String sql = "SELECT * FROM mail WHERE receiver=? ORDER BY time DESC";
+	String sql1 = "SELECT * FROM mail WHERE receiver=? AND sender=? ORDER BY time DESC";
+	String sql2 = "SELECT * FROM mail WHERE sender=? ORDER BY time DESC";
+	String sql3 = "SELECT * FROM mail WHERE sender=? AND receiver=? ORDER BY time DESC";
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -44,8 +44,15 @@ public class NavigationServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		cookies.checkCsrf(request);
+
+		try {
+			cookies.checkCsrf(request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			request.getRequestDispatcher("/login.html").forward(request, response);
+			e.printStackTrace();
+			return;
+		}
 
 		response.setContentType("text/html");
 
@@ -96,8 +103,10 @@ public class NavigationServlet extends HttpServlet {
 			output.append("<div class=\"col col-8 mb-3\"><form action=\"NavigationServlet\" method=\"post\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"email\" value=\"" + receiver + "\">\r\n");
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
-			output.append("		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for sender\" name=\"search\" value=\"\"required></input></div>\r\n");
-			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"inbox\" value=\"Search\"></div></div>\r\n");
+			output.append(
+					"		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for sender\" name=\"search\" value=\"\"required></input></div>\r\n");
+			output.append(
+					"		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"inbox\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (sender != null)
@@ -125,16 +134,16 @@ public class NavigationServlet extends HttpServlet {
 	}
 
 	private String getHtmlForSent(String sender, String password, String receiver) {
-		try{
+		try {
 			PreparedStatement st = conn.prepareStatement(sql2);
 			st.setString(1, sender);
 			ResultSet sqlRes;
 			if (receiver == null) {
 				sqlRes = st.executeQuery();
 			} else {
-				PreparedStatement st1 =conn.prepareStatement(sql3);
+				PreparedStatement st1 = conn.prepareStatement(sql3);
 				st1.setString(1, sender);
-				st1.setString(2,receiver);
+				st1.setString(2, receiver);
 				sqlRes = st.executeQuery();
 			}
 			StringBuilder output = new StringBuilder();
@@ -145,7 +154,8 @@ public class NavigationServlet extends HttpServlet {
 			output.append("		<input type=\"hidden\" name=\"password\" value=\"" + password + "\">\r\n");
 			output.append(
 					"		<div class=\"row my-1\"><div class=\"col-auto\"><input class=\"form-control\" type=\"text\" placeholder=\"Search for receiver\" name=\"search\" value=\"\" required></div>\r\n");
-			output.append("		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Search\"></div></div>\r\n");
+			output.append(
+					"		<div class=\"col\"><input class=\"btn\" style=\"background-color:dodgerblue; color: #fff;\" type=\"submit\" name=\"sent\" value=\"Search\"></div></div>\r\n");
 			output.append("</form></div>\r\n");
 
 			if (receiver != null)

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cookies.cookies;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,15 @@ public class SendMailServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			cookies.checkCsrf(request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			request.getRequestDispatcher("/login.html").forward(request, response);
+			e.printStackTrace();
+			return;
+		}
+		
 		response.setContentType("text/html");
 		
 		String sender = request.getParameter("email").replace("'", "''");

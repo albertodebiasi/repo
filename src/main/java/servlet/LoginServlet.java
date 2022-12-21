@@ -60,7 +60,6 @@ public class LoginServlet extends HttpServlet {
 			ResultSet sql1 = st.executeQuery();
 			if (sql1.next()) {
 				salt= sql1.getString(5).getBytes("Utf-8");
-				System.out.println(pwd);
 				pwd = hashing.generateHash(pwd, algorithm, salt);
 				sql1.close();
 				System.out.println("password: " + pwd);
@@ -80,7 +79,7 @@ public class LoginServlet extends HttpServlet {
 					System.out.println("Login succeeded!");
 					request.setAttribute("content", "");
 					request.getRequestDispatcher("home.jsp").forward(request, response);
-				
+					
 				}else {
 					System.out.println("Login failed!");
 					request.getRequestDispatcher("login.html").forward(request, response);
@@ -95,6 +94,16 @@ public class LoginServlet extends HttpServlet {
 			request.getRequestDispatcher("login.html").forward(request, response);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			cookies.checkCsrf(request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			request.getRequestDispatcher("/login.html").forward(request, response);
 			e.printStackTrace();
 		}
 	}
